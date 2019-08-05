@@ -91,7 +91,7 @@ manager of the corresponding distribution to install it.
 
 # Docker
 
-In order to run the more advanced examples of this lesson, Docker will 
+In order to run the examples of this lesson, the Docker container runtime will 
 need to be available on your machine. Please visit 
 <https://www.docker.com> to download and install the version 
 compatible with your system.
