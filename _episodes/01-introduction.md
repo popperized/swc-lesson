@@ -6,17 +6,14 @@ questions:
 - "How can I make my results easier to reproduce?"
 objectives:
 - "Introduction to the practical aspects of reproducibility."
-- "Explain what Github Actions workflows are."
-- "Explain how a Github Action workflow differs from shell scripts."
+- "Explain the notition of a scientific workflow or pipeline."
 keypoints:
-- "Scientific exploration workflows can be seen as software delivery
-  pipelines."
-- "Software delivery pipelines use sophisticated and mature DevOps
-  tools with large user communities in industry."
-- "DevOps tools include (but are not limited to) source code control,
-  package managers, dataset managers, data analysis and visualization
-  tools, and continuous integration services"
-- "Popper is a workflow execution engine that helps users create
+- "Scientific explorations can be described in a workflow language so 
+  that they can be automatically re-executed."
+- "The Github Actions (GHA) Workflow Language can be used to express 
+  workflows that are easier to re-execute since they assume they will 
+  run on a containerized environment."
+- "Popper is a GHA workflow execution engine that helps users create
   automated and portable experimentation workflows."
 ---
 
@@ -54,11 +51,23 @@ mean for an arbitrary number of years.
 We start by creating a folder that we'll name `myproject/`, and we'll 
 first download the dataset: right click on [this link][lnk], select 
 `Save as...` and save it in a `myproject/data/` folder (so file will 
-reside in `myproject/data/global.csv`).
+reside in `myproject/data/global.csv`) as shown below:
+
+```
+tree .
+.
+└── data
+    └── global.csv
+
+1 directory, 1 file
+```
+
+> **NOTE**: The above uses the `tree` command that might not be 
+available on your machine. You can either install it or instead run 
+`ls -lR`.
 
 Then, assume we have a `scripts/get_mean_by_group.py` Python script 
 that calculates the mean for this dataset:
-
 
 ```python
 #!/usr/bin/env python
@@ -105,8 +114,22 @@ with open(fname, 'r') as fi, open(fout, 'w') as fo:
 ```
 
 We can copy-paste the content of this script and put it in a 
-`scripts/` folder. This script is invoked by running the following 
-command on the terminal:
+`scripts/` folder. The folder structure now looks like this:
+
+
+```bash
+tree .
+.
+├── data
+│   └── global.csv
+└── scripts
+    └── get_mean_by_group.py
+
+2 directories, 2 files
+```
+
+This script is invoked by running the following command on the 
+terminal:
 
 ```bash
 python scripts/get_mean_by_group.py data/global.csv 5
@@ -119,26 +142,55 @@ for each group the mean was obtained. Note how years before 1950 did
 not contain an entry for the `Per Capita` column and thus any group 
 before this year has 0.0 as the resulting mean.
 
-Thus, the workflow in this case is comprised of the following three 
+Thus, the workflow in this case is comprised of the following two 
 steps:
 
  1. Download data.
- 2. Exeucte analysis.
- 3. Validate output data.
+ 2. Execute analysis.
 
---------
+In order to automate these steps, we can write a Bash scripts:
 
-We can write a `README.md` file containing the above instructions, 
-upload our code to Github, and perhaps archive it on Zenodo and 
-generate a DOI for it. In addition, we can make it easier for others 
-to re-execute what we have done by automating all these manual tasks 
-in a way that is easily portable. By portability we mean that someone 
-else re-running this workflow would do so without having to deal with 
-issues arising from the fact that their computing environment is 
-different than the one where this workflow originally executed. In 
-this lesson, we will learn how to do this by writing workflows in the 
-[Github Actions (GHA) Workflow language][gha]. We will also use 
-[Popper][pp] to run GHA workflows in our machine and on CI services.
+```bash
+#!/bin/bash
+set -e
+
+curl \
+  --create-dirs \
+  -Lo workflows/minimal-python/data/global.csv \
+  https://github.com/datasets/co2-fossil-global/raw/master/global.csv
+
+python scripts/get_mean_by_group.py data/global.csv 5
+```
+
+> ## What Might Cause This Script to Fail?
+>
+> The above example, although minimal, might not work properly when 
+> executed in other environments. Can you think of what might cause 
+> this Bash script to fail when executed in other environments?
+>
+> > ## Solution
+> > 
+> > Some things that might go wrong:
+> >
+> >  1. The `curl` command is not available.
+> >  2. The Python script (lines 5-10) takes care of dealing with 
+> >     portability issues across the two main versions of the Python 
+> >     runtime that are in use today. If this wasn't the case (e.g. 
+> >     line 7 was the only one in the script), this would fail when 
+> >     executed on a Python version distinct to the one where the 
+> >     workflow originally ran.
+> {: .solution}
+{: .challenge}
+
+We can make it easier for others to re-execute what we have done by 
+automating all these manual tasks in a way that is portable. By 
+portability we mean that someone else re-running this workflow would 
+do so without having to deal with issues arising from the fact that 
+their computing environment is different than the one where this 
+workflow originally executed. In this lesson, we will learn how to do 
+this by writing workflows in the [Github Actions (GHA) Workflow 
+language][gha]. We will also use [Popper][pp] to run GHA workflows in 
+our machine and on CI services.
 
 {% include links.md %}
 
