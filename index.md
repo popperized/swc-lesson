@@ -4,7 +4,7 @@ root: .  # Is the only page that doesn't follow the pattern /:path/index.html
 permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
 ---
 
-In this lesson, you will learn how to automate an experimentation 
+In this lesson you will learn how to automate an experimentation 
 workflow using [Popper][pp], a [Github Actions][gha] (GHA) workflow 
 execution engine. Using the GHA workflow language allows experimenters 
 to implement automated and portable workflows that are easy to 
