@@ -142,13 +142,14 @@ for each group the mean was obtained. Note how years before 1950 did
 not contain an entry for the `Per Capita` column and thus any group 
 before this year has 0.0 as the resulting mean.
 
-Thus, the workflow in this case is comprised of the following two 
-steps:
+Thus, the workflow in this minimal example study is comprised of the 
+following two steps:
 
  1. Download data.
  2. Execute analysis.
 
-In order to automate these steps, we can write a Bash scripts:
+In order to automate these steps, we can write the following Bash 
+script:
 
 ```bash
 #!/bin/bash
