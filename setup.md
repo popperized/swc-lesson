@@ -131,10 +131,9 @@ default on macOS and Linux.
 # Popper
 
 To get started with the CLI tool, please install Popper by following 
-the instructions on [this 
-page](https://github.com/systemslab/popper/tree/master/cli#install). 
-Note that we have only thoroughly tested on macOS and Linux. For 
-Windows, we recommend using Popper with the [Windows Subsystem for 
+the instructions on [this page][install]. Note that we have only 
+thoroughly tested on macOS and Linux. For Windows, we recommend using 
+Popper with the [Windows Subsystem for 
 Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install-win10). 
 
 To get an overview and list of commands check out the command line 
@@ -145,3 +144,5 @@ popper --help
 ```
 
 {% include links.md %}
+
+[install]: https://popper.readthedocs.io/en/latest/sections/getting_started.html#installation
