@@ -43,10 +43,10 @@ This is also commonly referred to a "workflow" or a "pipeline".
 ### An Example
 
 Assume that, as part of a study, we are analyzing historic data in 
-order to obtain a statistical descriptor for this dataset. 
-Specifically, we download [this table][co2table] containing a record 
-of CO2 emissions per capita per country, and obtain the arithmetic 
-mean for an arbitrary number of years.
+order to obtain a statistical descriptor. Specifically, we will be 
+making use of a dataset that contains a record of CO2 emissions per 
+capita per country, and obtain the arithmetic mean for an arbitrary 
+number of years.
 
 We start by creating a folder that we'll name `myproject/`, and we'll 
 first download the dataset: right click on [this link][lnk], select 
@@ -103,7 +103,7 @@ with open(fname, 'r') as fi, open(fout, 'w') as fo:
         year = 0
 
         for row in g:
-            # check for empty value (and assume zero if not found)
+            # check if column is null (assume zero if it is)
             if row[last]:
                 group_sum += float(row[last])
             else:
@@ -170,7 +170,7 @@ python scripts/get_mean_by_group.py data/global.csv 5
 > this Bash script to fail when executed in other environments?
 >
 > > ## Solution
-> > 
+> >
 > > Some things that might go wrong:
 > >
 > >  1. The `curl` command is not available.
@@ -195,7 +195,6 @@ our machine and on CI services.
 
 {% include links.md %}
 
-[co2table]: https://github.com/datasets/co2-fossil-global
 [gha]: https://developer.github.com/actions/managing-workflows/workflow-configuration-options/#example-workflow
 [pp]: https://github.com/systemslab/popper
 [lnk]: https://raw.githubusercontent.com/datasets/co2-fossil-global/master/global.csv
