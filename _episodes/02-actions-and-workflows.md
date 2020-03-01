@@ -12,73 +12,66 @@ keypoints:
 - ""
 ---
 
-The workflow we saw has two steps:
+The workflow we saw previously has two steps:
 
  1. Download data.
  2. Execute analysis.
 
 It's time to write our first Github Actions workflow. To do so, create 
-a `main.workflow` file and put it in the `myproject/` folder. The 
-contents are the following:
+a `wf.yml` file and put it a `myproject/` folder. The content of this 
+file are the following:
 
 ```hcl
-workflow "co2 emissions" {
-  resolves = "run analysis"
-}
+steps:
+- uses: docker://byrnedo/alpine-curl:0.1.8
+  args: [-LO, https://github.com/datasets/co2-fossil-global/raw/master/global.csv]
 
-action "download data" {
-  uses = "actions/bin/sh@master"
-  runs = [
-    "curl", "--create-dirs", "-Lo data/global.csv",
-    "https://github.com/datasets/co2-fossil-global/raw/master/global.csv"
-  ]
-}
-
-action "run analysis" {
-  needs = "download data"
-  uses = "actions/bin/sh@master"
-  runs = [
-    "python", "scripts/get_mean_by_group.py", "data/global.csv", "5"
-  ]
-}
+- uses: docker://python:3.8.1-alpine
+  runs: [scripts/get_mean_by_group.py, data/global.csv, "5"]
 ```
 
-A workflow is composed by workflow and action blocks. Workflow blocks 
-are specified in the following way:
+A workflow is specified with a `steps` keyword that denotes a [YAML 
+list][ymllists]. Each item in that list is a step, which is a YAML 
+dictionary with at least a `uses` key in it. For more information on 
+the syntax, check the [official Popper documentation][ymlsyntax].
 
-```hcl
-workflow "NAME" {
-  <WORKFLOW ATTRIBUTES>
-}
+### Running `popper` commands
+
+Before we go ahead and execute the above workflow, let's look at the 
+syntax for running `popper` (sub) commands. The general pattern is the 
+following:
+
+```bash
+popper <subcommand> [options]
 ```
 
-While action blocks have the same form but use the `action` keyword 
-instead:
+Where `<subcommand>` is one of the available subcommands such as 
+`run`, `ci`, `version`, etc. To get general help:
 
-```hcl
-action "NAME" {
-  <ACTION ATTRIBUTES>
-}
+```bash
+popper --help
 ```
 
-In the example above, the workflow block specifies that it needs to 
-execute `run analysis` (specified in the `resolves` attribute), but 
-because the `run analysis` action specifies that it depends on 
-`download data` being executed first (via the `needs` attribute), the 
-`download data` block executes first. The `run analysis` action will 
-execute once `download data` has successfully completed.
+And help information for each subcommand can also be displayed, for 
+example:
 
-### Workflow attributes
+```bash
+popper run --help
+```
 
-Check the official [action attributes documentation][wf-attr].
+### Running a workflow
 
-[wf-attr]: https://developer.github.com/actions/managing-workflows/workflow-configuration-options/#workflow-attributes
+Now that we know how to execute commands, let's run the workflow we 
+showed above:
 
-### Action attributes
+```bash
+cd myproject
+popper run -f wf.yml
+```
 
-Check the official [action attributes documentation][act-attr].
+The output of the above will inform you of what
 
-[act-attr]: https://developer.github.com/actions/managing-workflows/workflow-configuration-options/#actions-attributes
-
+[ymllists]: https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html
+[ymlsyntax]: https://popper.readthedocs.io/en/latest/sections/cn_workflows.html#syntax
 
 {% include links.md %}
